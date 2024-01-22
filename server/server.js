@@ -2,18 +2,18 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const http = require('http');
-const socketIo = require('socket.io/dist');
+const socketIo = require('socket.io');
 const cors = require('cors');
 
 const compression = require('compression');
-require('dotenv/lib/main').config();
+require('dotenv').config();
 const app = express();
 const server = http.createServer(app);
-const { handleRegister, handleSendCode, handleSignIn, handleSearchFriend, handleAddFriend, handleGetFriends, handleSearchExistingFriend, handleUserProfile } = require('../controllers/userController');
-const { handleChatMessage, handleGetChatMessages } = require('../controllers/chatController');
-const chatController = require('../controllers/chatControllerModified');
+const { handleRegister, handleSendCode, handleSignIn, handleSearchFriend, handleAddFriend, handleGetFriends, handleSearchExistingFriend, handleUserProfile } = require('./controllers/userController');
+const { handleChatMessage, handleGetChatMessages } = require('./controllers/chatController');
+const chatController = require('./controllers/chatControllerModified');
 const redis = require('redis/dist');
-const { handleCall, handleAnswer1, handleReject, handleHangUp, handleOffer, handleAnswer } = require('../controllers/callController');
+const { handleCall, handleAnswer, handleReject, handleHangUp } = require('./controllers/callController');
 
 
 
@@ -194,6 +194,29 @@ mongoose.connection.once('open', () => {
         socket.on('stopTyping', ({ sender, receiver }) => {
             socket.broadcast.emit('stopTyping', { sender, receiver });
         });
+
+
+        socket.on('call', (data) => {
+            handleCall(io, socket, data);
+        });
+
+        socket.on('answer', (data) => {
+            handleAnswer(io, socket, data);
+        });
+
+        socket.on('reject', (data) => {
+            handleReject(io, socket, data);
+        });
+
+        socket.on('hangUp', (data) => {
+            handleHangUp(io, socket, data);
+        });
+
+
+
+
+
+
         socket.on('disconnect', () => {
             console.log(`Socket disconnected: ${socket.id}`);
 
@@ -207,32 +230,6 @@ mongoose.connection.once('open', () => {
         });
 
 
-        socket.on('call', (data) => {
-            console.log(`Call event received: ${JSON.stringify(data)}`);
-            handleCall(io, socket, data, onlineUsers);
-        });
-
-        socket.on('answer1', (data) => {
-            console.log(`Answer event received: ${JSON.stringify(data)}`);
-            handleAnswer1(io, socket, data, onlineUsers);
-        });
-
-        socket.on('reject', (data) => {
-            console.log(`Reject event received: ${JSON.stringify(data)}`);
-            handleReject(io, socket, data, onlineUsers);
-        });
-
-        socket.on('hangUp', (data) => {
-            console.log(`HangUp event received: ${JSON.stringify(data)}`);
-            handleHangUp(io, socket, data, onlineUsers);
-        });
-        socket.on('offer', (data) => {
-            handleOffer(io, socket, data);
-        });
-
-        socket.on('answer', (data) => {
-            handleAnswer(io, socket, data);
-        });
 
 
 

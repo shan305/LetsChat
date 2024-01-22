@@ -2,8 +2,8 @@
 
 const VerificationCode = require('../models/verificationCode');
 const { User, Media } = require('../models/users');
-const multer = require('../server/node_modules/@types/multer');
-const { v4: uuidv4 } = require('../server/node_modules/@types/uuid'); 
+const multer = require('multer');
+
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
