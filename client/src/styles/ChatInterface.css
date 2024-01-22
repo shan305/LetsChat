@@ -1,0 +1,139 @@
+#chat-container {
+    display: flex;
+    flex-direction: column;
+}
+
+#chat-container li {
+    max-width: 70%;
+    /* Adjust the maximum width of each message box */
+    word-wrap: break-word;
+    padding: 8px;
+}
+
+#chat-container li.justify-end {
+    align-self: flex-end;
+    text-align: right;
+}
+
+#chat-container li.justify-start {
+    align-self: flex-start;
+    text-align: left;
+}
+
+
+/* Add your global styles here */
+
+
+/* Example styles for ChatInterface */
+
+.chat-interface {
+    display: flex;
+    height: 100vh;
+}
+
+.left-panel {
+    width: 25%;
+    background-color: #f0f0f0;
+    padding: 20px;
+}
+
+.chat-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.messages-container {
+    flex: 1;
+    overflow-y: auto;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.message {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.message-avatar {
+    width: 40px;
+    height: 40px;
+    background-color: #ccc;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.message-text {
+    word-wrap: break-word;
+    max-width: 70%;
+}
+
+.input-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.message-input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px 0 0 8px;
+    outline: none;
+}
+
+.send-button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 0 8px 8px 0;
+    padding: 10px;
+    cursor: pointer;
+}
+
+
+/* AddFriend component styles */
+
+.add-friend-container {
+    margin-top: 20px;
+}
+
+.add-friend-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.add-friend-input-container {
+    display: flex;
+}
+
+.add-friend-input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px 0 0 8px;
+    outline: none;
+}
+
+.search-button {
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 0 8px 8px 0;
+    padding: 10px;
+    cursor: pointer;
+}
+
+
+/* Adjust other component styles as needed */
+
+.notification {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 5px;
+}

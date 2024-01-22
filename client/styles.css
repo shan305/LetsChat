@@ -1,0 +1,37 @@
+/* src/styles.css */
+
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* Add your custom styles below this line */
+
+
+/* For example, let's style the chat container */
+
+#chat-container {
+    display: flex;
+    height: 100vh;
+}
+
+#user-list {
+    flex: 1;
+    padding: 20px;
+    background-color: #f0f0f0;
+}
+
+#chat {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+#message-input {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+
+/* Add more styles as needed */

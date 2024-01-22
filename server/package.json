@@ -1,0 +1,40 @@
+{
+    "name": "letschat",
+    "version": "1.0.0",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node server.js"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@socket.io/redis-adapter": "^7.2.0",
+        "@types/axios": "^0.14.0",
+        "@types/chance": "^1.1.6",
+        "@types/dotenv": "^8.2.0",
+        "@types/multer": "^1.4.11",
+        "@types/node-fetch": "^2.6.10",
+        "@types/redis": "^4.0.11",
+        "@types/socket.io-redis": "^3.0.0",
+        "@types/uuid": "^9.0.7",
+        "axios": "^1.6.5",
+        "body-parser": "^1.20.2",
+        "chance": "^1.1.11",
+        "cors": "^2.8.5",
+        "dotenv": "^16.3.1",
+        "express": "^4.18.2",
+        "faker": "^6.6.6",
+        "mongodb": "^6.3.0",
+        "mongoose": "^8.0.3",
+        "multer": "^1.4.5-lts.1",
+        "node-fetch": "^3.3.2",
+        "redis": "^4.6.12",
+        "socket.io": "^4.7.3",
+        "socket.io-redis": "^5.4.0",
+        "twilio": "^5.0.0-rc.1",
+        "uuid": "^9.0.1"
+    },
+    "description": ""
+}
