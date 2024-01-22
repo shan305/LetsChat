@@ -151,7 +151,6 @@ mongoose.connection.once('open', () => {
             try {
                 console.log("Received chat message from", data.sender, "to", data.receiver, ":", data.message);
                 handleChatMessage(io, socket, data);
-                // Emit the message to the sender
                 io.to(data.sender).emit('newMessage', data);
                 console.log("Emitting 'newMessage' event to receiver:", data.receiver);
 

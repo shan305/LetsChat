@@ -10,17 +10,14 @@ const upload = multer({ storage });
 
 async function handleChatMessage(io, socket, { sender, receiver, message, messageType, mediaFile }) {
     try {
-        // Find sender and receiver by phoneNumber
         const senderUser = await User.findOne({ phoneNumber: sender });
         const receiverUser = await User.findOne({ phoneNumber: receiver });
 
         if (!senderUser || !receiverUser) {
-            // Emit an error if either sender or receiver is not found
             socket.emit('chatMessageError', 'Sender or receiver not found');
             return;
         }
 
-        // Create a new chat message
         const newChatMessage = {
             sender: senderUser._id,
             receiver: receiverUser._id,
@@ -28,7 +25,6 @@ async function handleChatMessage(io, socket, { sender, receiver, message, messag
             messageType,
         };
 
-        // If it's a media message, handle the media file
         if (messageType === 'image' && mediaFile) {
             try {
                 const newMedia = new Media({
@@ -41,7 +37,6 @@ async function handleChatMessage(io, socket, { sender, receiver, message, messag
                 await newMedia.save();
                 newChatMessage.media = newMedia._id;
 
-                // Save the chat message to the sender and receiver's chatMessages array
                 senderUser.chatMessages.push(newChatMessage);
                 receiverUser.chatMessages.push(newChatMessage);
 
@@ -56,12 +51,10 @@ async function handleChatMessage(io, socket, { sender, receiver, message, messag
                 socket.emit('chatMessageError', 'Error saving media');
             }
         } else {
-            // Handle text message
             // Save the chat message to the sender and receiver's chatMessages array
             senderUser.chatMessages.push(newChatMessage);
             receiverUser.chatMessages.push(newChatMessage);
 
-            // Save changes to the database
             await senderUser.save();
             await receiverUser.save();
 
@@ -106,7 +99,6 @@ async function handleGetChatMessages(io, socket, userPhoneNumber, friendPhoneNum
                         const msg = {...message._doc };
 
                         if (message.media) {
-                            // If the message contains a media ID, retrieve the media
                             const media = await Media.findById(message.media);
 
                             if (media) {

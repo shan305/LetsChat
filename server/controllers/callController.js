@@ -32,7 +32,6 @@ const handleAnswer = async(io, socket, data) => {
     const { caller, receiver } = data;
 
     try {
-        // Fetch user details for both caller and receiver
         const callerUser = await User.findOne({ phoneNumber: caller });
         const receiverUser = await User.findOne({ phoneNumber: receiver });
 
@@ -56,7 +55,6 @@ const handleReject = async(io, socket, data) => {
     const { caller, receiver } = data;
 
     try {
-        // Fetch user details for both caller and receiver
         const callerUser = await User.findOne({ phoneNumber: caller });
         const receiverUser = await User.findOne({ phoneNumber: receiver });
 
@@ -80,7 +78,6 @@ const handleHangUp = async(io, socket, data) => {
     const { caller, receiver } = data;
 
     try {
-        // Fetch user details for both caller and receiver
         const callerUser = await User.findOne({ phoneNumber: caller });
         const receiverUser = await User.findOne({ phoneNumber: receiver });
 
@@ -100,5 +97,4 @@ const handleHangUp = async(io, socket, data) => {
     }
 };
 
-// Export all functions
 module.exports = { handleCall, handleAnswer, handleReject, handleHangUp };

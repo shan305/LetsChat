@@ -48,7 +48,6 @@ const handleRegister = async(io, socket, userData) => {
     }
 
     try {
-        // Create a new passcode entry for the user
         const newPasscodeEntry = new Passcode({
             phoneNumber,
             passcode,
@@ -65,7 +64,6 @@ const handleRegister = async(io, socket, userData) => {
         await newUser.save();
 
         if (avatar) {
-            // Pass the user ID after newUser is saved
             newUser.avatar = await saveMediaFile(avatar, newUser._id);
             await newUser.save();
         }
@@ -98,7 +96,6 @@ async function handleSignIn(io, socket, userData) {
     }
 
     try {
-        // Check if the passcode is valid
         const passcodeEntry = await Passcode.findOne({ phoneNumber, passcode }).exec();
 
         if (!passcodeEntry) {
@@ -106,7 +103,6 @@ async function handleSignIn(io, socket, userData) {
             return;
         }
 
-        // Find the user by phone number and username
         const user = await User.findOne({ phoneNumber, username }).maxTimeMS(15000).exec();
 
         if (!user) {
@@ -114,7 +110,6 @@ async function handleSignIn(io, socket, userData) {
             return;
         }
 
-        // Fetch user avatar if available
         let avatarData = null;
         if (user.avatar) {
             const avatarMedia = await Media.findById(user.avatar);
@@ -124,7 +119,6 @@ async function handleSignIn(io, socket, userData) {
             }
         }
 
-        // You can include the avatar data in the response
         socket.emit('signInSuccess', {
             user: {
                 _id: user._id,
@@ -134,7 +128,6 @@ async function handleSignIn(io, socket, userData) {
             },
         });
 
-        // Optionally, handle getting friends
         await handleGetFriends(io, socket, user);
 
         // Remove the used passcode
@@ -179,7 +172,6 @@ const handleSearchFriend = async(io, socket, user) => {
     console.log('Received search request for friend:', user);
 
     try {
-        // Use user in your search logic
         const friend = await User.findOne({ $or: [{ phoneNumber: user.friendPhoneNumber }, { username: user.friendPhoneNumber }] });
 
         if (friend) {
@@ -189,7 +181,6 @@ const handleSearchFriend = async(io, socket, user) => {
                 results: [{
                     username: friend.username,
                     phoneNumber: friend.phoneNumber,
-                    // Add other friend properties as needed
                 }, ],
             });
         } else {
@@ -210,7 +201,6 @@ async function handleAddFriend(io, socket, { user, friendPhoneNumber }) {
         const friend = await User.findOne({ phoneNumber: friendPhoneNumber });
 
         if (friend) {
-            // Add the friend to the user's friend list (customize this based on your user schema)
             await User.findOneAndUpdate({ phoneNumber: user.phoneNumber }, { $addToSet: { friends: friend._id } });
 
             socket.emit('addFriendSuccess', {
@@ -218,16 +208,13 @@ async function handleAddFriend(io, socket, { user, friendPhoneNumber }) {
                 friend: {
                     username: friend.username,
                     phoneNumber: friend.phoneNumber,
-                    // Add other friend properties as needed
                 },
             });
         } else {
-            // Emit that the friend was not found
             socket.emit('addFriendError', 'Friend not found');
         }
     } catch (error) {
         console.error('Error during add friend:', error.message);
-        // Emit that there was an error adding the friend
         socket.emit('addFriendError', 'Error adding friend');
     }
 }
@@ -238,7 +225,6 @@ async function handleGetFriends(io, socket, user) {
         const currentUser = await User.findOne({ phoneNumber: user.phoneNumber }).populate('friends', 'username phoneNumber avatar');
 
         if (currentUser) {
-            // Extract relevant friend information (customize this based on your user schema)
             const friends = currentUser.friends.map(async(friend) => {
                 const friendData = {
                     username: friend.username,
@@ -255,13 +241,10 @@ async function handleGetFriends(io, socket, user) {
                 return friendData;
             });
 
-            // Wait for all avatar fetch operations to complete
             const friendsWithAvatars = await Promise.all(friends);
 
-            // Emit the friends list to the user
             socket.emit('getFriendsSuccess', { friends: friendsWithAvatars });
         } else {
-            // Emit that the user was not found
             socket.emit('getFriendsError', 'User not found');
         }
     } catch (error) {
@@ -275,7 +258,6 @@ const getUserProfile = async(io, socket, userId) => {
     try {
         const user = await User.findById(userId);
         if (user) {
-            // Fetch user avatar if available
             let avatarData = null;
             if (user.avatar) {
                 const avatarMedia = await Media.findById(user.avatar);
@@ -302,7 +284,6 @@ const getUserProfile = async(io, socket, userId) => {
 };
 const handleUserProfile = async(io, socket, userId) => {
     try {
-        // Pass the request to the function responsible for retrieving user profiles
         await getUserProfile(io, socket, userId);
     } catch (error) {
         console.error('Error handling user profile request:', error.message);

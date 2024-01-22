@@ -85,7 +85,6 @@ async function handleChatMessage(io, socket, { sender, receiver, message, messag
                 await newMedia.save();
                 newChatMessage.media = newMedia._id;
 
-                //... existing code for saving chat message
 
             } catch (error) {
                 console.error('Error saving audio:', error.message);
