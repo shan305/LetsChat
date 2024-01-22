@@ -1,4 +1,3 @@
-I apologize for the oversight. Let's include more details about the features provided by the server in the README file:
 
 ---
 
