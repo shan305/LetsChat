@@ -1,7 +1,7 @@
 //chatController.js
 
 const VerificationCode = require('../models/verificationCode');
-const { User, Media } = require('../models/users');
+const { User, Media } = require('../src/models/users');
 const multer = require('multer');
 
 const storage = multer.memoryStorage();

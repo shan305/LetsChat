@@ -1,6 +1,6 @@
 // callController.js
 
-const { User } = require('../models/users');
+const { User } = require('../src/models/users');
 
 const handleCall = async(io, socket, data) => {
     const { caller, receiver } = data;

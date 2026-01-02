@@ -1,16 +1,15 @@
-// Footer.js
+// src/Components/Footer.js
 import React from 'react';
 
 function Footer() {
+  const currentYear = new Date().getFullYear();
+
   return (
-    <div className="container mx-auto mt-5 pb-2 text-white">
-      <p className="text-center text-sm text-blue">
-        
-        <a href="https://www.scriptedsaga.io/" className="text-orange-500">
-         Copyright ©. All Rights Reserved. — Designed by Zeeshan Ali - scriptedsaga
-        </a>
+    <footer className="py-3 px-6 bg-white border-t border-slate-200 text-center">
+      <p className="text-sm text-slate-500">
+        {currentYear} Let's Chat. All rights reserved.
       </p>
-    </div>
+    </footer>
   );
 }
 

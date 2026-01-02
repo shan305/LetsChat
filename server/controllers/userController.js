@@ -1,5 +1,5 @@
 // controllers/userController.js
-const { User, Media, Passcode } = require('../models/users');
+const { User, Media, Passcode } = require('../src/models/users');
 const fs = require('fs');
 const { promisify } = require('util');
 

@@ -1,14 +1,10 @@
-import io from 'socket.io-client';
-import { url } from './api';
-
-const socket = io(url, {
-    reconnection: true,
-    reconnectionAttempts: 5,
-});
+import { socket } from './api';
 
 const socketApi = {
     connect: () => {
-        socket.connect();
+        if (!socket.connected) {
+            socket.connect();
+        }
     },
 
     disconnect: () => {
@@ -32,10 +28,16 @@ const socketApi = {
         }
     },
 
-    // Additional utility methods
-
     isConnected: () => {
         return socket.connected;
+    },
+
+    getSocket: () => {
+        return socket;
+    },
+
+    getId: () => {
+        return socket.id;
     },
 };
 

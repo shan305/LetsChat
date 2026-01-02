@@ -1,0 +1,59 @@
+# docker-compose.yml
+# Run: docker compose up -d
+# Stop: docker compose down
+# Reset: docker compose down -v (deletes data)
+
+services:
+  mongodb:
+    image: mongo:7
+    container_name: letschat-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: letschat
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/letschat --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: letschat-redis
+    restart: unless-stopped
+    ports:
+      - "6381:6381"  # External and internal both use 6381
+    volumes:
+      - redis_data:/data
+    command: redis-server --port 6381 --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "-p", "6381", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: letschat-rabbitmq
+    restart: unless-stopped
+    ports:
+      - "5674:5672"   # FIXED: Map external 5674 to internal 5672 (AMQP default)
+      - "15674:15672" # FIXED: Map external 15674 to internal 15672 (Management UI)
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: letschat
+      RABBITMQ_DEFAULT_PASS: letschat
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mongo_data:
+  redis_data:
+  rabbitmq_data:

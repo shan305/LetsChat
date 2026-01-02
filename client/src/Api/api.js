@@ -1,58 +1,108 @@
+// src/Api/api.js
 import io from 'socket.io-client';
-import { useState, useEffect } from 'react';
 
-export const url = 'http://localhost:3001'
-export const wsURL = 'ws://localhost:3001'
-
-export const socket = io(url, {
-    reconnection: true,
-    reconnectionAttempts: 10,
-    timeout: 5000,
-});
-
-
-const SOCKET_URL = 'http://localhost:3001';
-
-const useSocket = () => {
-    const [socket, setSocket] = useState(null);
-    const [isConnected, setIsConnected] = useState(false);
-
-    useEffect(() => {
-        const newSocket = io(SOCKET_URL, {
-            reconnection: true,
-            reconnectionAttempts: 5,
-            timeout: 5000,
-        });
-
-        newSocket.on('connect', () => {
-            console.log('Socket connected');
-            setIsConnected(true);
-        });
-
-        newSocket.on('disconnect', (reason) => {
-            console.log(`Socket disconnected: ${reason}`);
-            setIsConnected(false);
-        });
-
-        newSocket.on('reconnect', (attemptNumber) => {
-            console.log(`Socket reconnected after attempt ${attemptNumber}`);
-            setIsConnected(true);
-        });
-
-        newSocket.on('reconnect_failed', () => {
-            console.error('Socket reconnection failed');
-            setIsConnected(false);
-        });
-
-        setSocket(newSocket);
-
-        return () => {
-            newSocket.disconnect();
-            setIsConnected(false);
-        };
-    }, []);
-
-    return { socket, isConnected };
+const CONFIG = {
+  url: process.env.REACT_APP_API_URL || 'http://localhost:3001',
+  reconnection: true,
+  reconnectionAttempts: 10,
+  reconnectionDelay: 1000,
+  reconnectionDelayMax: 5000,
+  timeout: 20000,
+  transports: ['websocket', 'polling'],
+  autoConnect: true,
 };
 
-export default useSocket;
+export const url = CONFIG.url;
+export const wsURL = CONFIG.url;
+
+const socket = io(CONFIG.url, {
+  reconnection: CONFIG.reconnection,
+  reconnectionAttempts: CONFIG.reconnectionAttempts,
+  reconnectionDelay: CONFIG.reconnectionDelay,
+  reconnectionDelayMax: CONFIG.reconnectionDelayMax,
+  timeout: CONFIG.timeout,
+  transports: CONFIG.transports,
+  autoConnect: CONFIG.autoConnect,
+});
+
+let heartbeatInterval = null;
+
+const startHeartbeat = () => {
+  if (heartbeatInterval) return;
+  heartbeatInterval = setInterval(() => {
+    if (socket.connected) {
+      socket.emit('heartbeat');
+    }
+  }, 30000);
+};
+
+const stopHeartbeat = () => {
+  if (heartbeatInterval) {
+    clearInterval(heartbeatInterval);
+    heartbeatInterval = null;
+  }
+};
+
+socket.on('connect', () => {
+  console.log('[Socket] Connected:', socket.id);
+  startHeartbeat();
+});
+
+socket.on('disconnect', (reason) => {
+  console.log('[Socket] Disconnected:', reason);
+  stopHeartbeat();
+});
+
+socket.on('connect_error', (error) => {
+  console.error('[Socket] Connection error:', error.message);
+});
+
+socket.on('reconnect', (attemptNumber) => {
+  console.log('[Socket] Reconnected after', attemptNumber, 'attempts');
+});
+
+socket.on('reconnect_error', (error) => {
+  console.error('[Socket] Reconnection error:', error.message);
+});
+
+if (!socket.connected) {
+  socket.connect();
+}
+
+const socketApi = {
+  connect: () => {
+    if (!socket.connected) {
+      socket.connect();
+    }
+  },
+
+  disconnect: () => {
+    stopHeartbeat();
+    socket.disconnect();
+  },
+
+  on: (event, callback) => {
+    socket.on(event, callback);
+  },
+
+  off: (event, callback) => {
+    socket.off(event, callback);
+  },
+
+  emit: (event, data) => {
+    if (!socket.connected) {
+      console.warn('[Socket] Not connected, attempting to connect...');
+      socket.connect();
+    }
+    socket.emit(event, data);
+  },
+
+  isConnected: () => socket.connected,
+
+  getSocket: () => socket,
+
+  getId: () => socket.id,
+};
+
+export { socket };
+export default socketApi;
