@@ -231,14 +231,3 @@ The backend **does not emit**:
 * Global online user lists
 
 These are intentional to keep the real-time path minimal.
-
----
-
-If you want next, we can:
-
-* align frontend expectations against this list
-* remove dead listeners in client code
-* add a **wire-level message schema** (one page, no fluff)
-* or freeze this as v1 contract
-
-Just tell me.
