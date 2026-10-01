@@ -11,7 +11,8 @@
     "docker:down": "docker compose down",
     "docker:reset": "docker compose down -v && docker compose up -d",
     "lint": "eslint src/",
-    "test": "jest"
+    "test": "jest",
+    "test:baseline": "jest tests --runInBand"
   },
   "dependencies": {
     "@socket.io/redis-adapter": "^8.2.1",
